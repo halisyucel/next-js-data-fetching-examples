@@ -20,12 +20,8 @@ const Blog = ({ data }) => {
 
 const getStaticProps = async () => {
 	const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-	const posts = await response.json();
-	return {
-		props: {
-			data: posts
-		},
-	};
+	const data = await response.json();
+	return { props: { data } };
 }
 
 export default Blog;

@@ -1,6 +1,16 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 
-const Post = ({ data }) => {
+const Article = ({ data }) => {
+	const router = useRouter();
+	
+	if (router.isFallback)
+		return (
+			<div>
+				loading...
+			</div>
+		)
+	
 	return (
 		<div>
 			<h1>{data.title}</h1>
@@ -14,24 +24,24 @@ const getStaticPaths = async () => {
 	const posts = await response.json();
 	return {
 		paths: [
-			...posts.map((post) => ({
-				params: { id: post.id.toString() }
-			}))
+			...posts.map((post) => {
+				return {
+					params: {
+						id: post.id.toString()
+					}
+				}
+			})
 		],
-		fallback: false
+		fallback: true
 	}
 }
 
 const getStaticProps = async (context) => {
 	const { id } = context.params;
 	const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`);
-	const post = await response.json();
-	return {
-		props: {
-			data: post
-		},
-	};
+	const data = await response.json();
+	return { props: { data } };
 }
 
-export default Post;
+export default Article;
 export { getStaticPaths, getStaticProps };
